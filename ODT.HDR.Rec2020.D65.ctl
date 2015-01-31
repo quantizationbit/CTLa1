@@ -36,12 +36,20 @@ void main
 {
 
     float fudgeMax;
-    const float maxLMT700 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(16.2917402385)*1000.0/1014.0, ODT_1000nits)*1014.0/1000.0;
-    const float maxLMT1000 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(16.2917402385)*1000.0/2079.0, ODT_1000nits)*2079.0/1000.0;
-    const float maxLMT1200 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(16.2917402385)*1000.0/3580.0, ODT_1000nits)*3580.0/1000.0;
+    float exrMAX=16.2917402385;
+    float n700  = 1028.0;
+    float n1000 = 2120.0;
+    float n1200 = 3700.0;
+    const float maxLMT700 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(exrMAX)*1000.0/n700, ODT_1000nits)*n700/1000.0;
+    const float maxLMT1000 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(exrMAX)*1000.0/n1000, ODT_1000nits)*n1000/1000.0;
+    const float maxLMT1200 = segmented_spline_c9_fwd(segmented_spline_c5_fwd(exrMAX)*1000.0/n1200, ODT_1000nits)*n1200/1000.0;
     
-    if(MAX >= 699.99 && MAX <= 1000.0) fudgeMax = 1014.0 + (2079.0-1014.0)*(MAX-700.0)/300.0;
-    if(MAX > 1000.0 && MAX <= 1200.01) fudgeMax = 2079.0 + (3580.0-2079.0)*(MAX-1000.0)/200.0;
+    if(MAX >= 699.99 && MAX <= 1000.0) fudgeMax = n700 + (n1000-n700)*(MAX-700.0)/300.0;
+    if(MAX > 1000.0 && MAX <= 1200.01) fudgeMax = n1000 + (n1200-n1000)*(MAX-1000.0)/200.0;
+    
+    //const float fudgeMax = pow(MAX/100.0,1.22)*100.0;
+    const float scaleMax = fudgeMax/1000.0; 
+    print(MAX, " ", maxLMT700, " ", maxLMT1000, " ", maxLMT1200, " ", fudgeMax, "\n");
     
     //const float fudgeMax = pow(MAX/100.0,1.22)*100.0;
     const float scaleMax = fudgeMax/1000.0; 
