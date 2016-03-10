@@ -1,5 +1,5 @@
 //
-//  P3DCI/RRT inversion to ACES
+// 709/RRT inversion to ACES
 //
 
 
@@ -9,13 +9,11 @@ import "ACESlib.Transform_Common.a1.0.1";
 import "ACESlib.Tonescales.a1.0.1";
 
 
-
-
-// <ACEStransformID>InvODT.Academy.P3DCI_48nits.a1.0.1</ACEStransformID>
-// <ACESuserName>ACES 1.0 Inverse Output - P3-DCI</ACESuserName>
+// <ACEStransformID>InvODT.Academy.Rec709_100nits_dim.a1.0.1</ACEStransformID>
+// <ACESuserName>ACES 1.0 Inverse Output - Rec.709</ACESuserName>
 
 // 
-// Inverse Output Device Transform - P3DCI (D60 Simulation)
+// Inverse Output Device Transform - Rec709
 //
 import "ACESlib.ODT_Common.a1.0.1";
 
@@ -70,7 +68,6 @@ int[3] order3( float r, float g, float b)
 }
 
 
-
 float[3] restore_hue_dw3( float pre_tone[3], float post_tone[3])
 {
     // modifies the hue of post_tone RGB to match hue pre_tone RGB, by moving 
@@ -95,19 +92,13 @@ float[3] restore_hue_dw3( float pre_tone[3], float post_tone[3])
 }
 
 
-
-
-
-/* --- ODT Parameters --- */
-const Chromaticities DISPLAY_PRI = P3DCI_PRI;
+/* ----- ODT Parameters ------ */
+const Chromaticities DISPLAY_PRI = REC709_PRI;
 const float DISPLAY_PRI_2_XYZ_MAT[4][4] = RGBtoXYZ(DISPLAY_PRI,1.0);
 
-const float DISPGAMMA = 2.6; 
-
-// Rolloff white settings for P3DCI
-const float NEW_WHT = 0.918;
-const float ROLL_WIDTH = 0.5;    
-const float SCALE = 0.96;
+const float DISPGAMMA = 2.4; 
+const float L_W = 1.0;
+const float L_B = 0.0;
 
 
 
@@ -120,57 +111,70 @@ void main
     output varying float rOut,
     output varying float gOut,
     output varying float bOut,
-    output varying float aOut
+    output varying float aOut,
+    input varying int legalRange = 0
 )
-{
+{  
     float outputCV[3] = { rIn, gIn, bIn};
 
+  // Default output is full range, check if legalRange param was set to true
+    if (legalRange == 1) {
+      outputCV = smpteRange_to_fullRange_f3( outputCV);
+    }
+
   // Decode to linear code values with inverse transfer function
-    float linearCV[3] = pow_f3( outputCV, DISPGAMMA);
-    
+    float linearCV[3];
+    linearCV[0] = bt1886_f( outputCV[0], DISPGAMMA, L_W, L_B);
+    linearCV[1] = bt1886_f( outputCV[1], DISPGAMMA, L_W, L_B);
+    linearCV[2] = bt1886_f( outputCV[2], DISPGAMMA, L_W, L_B);
+
   // Convert from display primary encoding
     // Display primaries to CIE XYZ
     float XYZ[3] = mult_f3_f44( linearCV, DISPLAY_PRI_2_XYZ_MAT);
   
+      // Apply CAT from assumed observer adapted white to ACES white point
+      XYZ = mult_f3_f33( XYZ, invert_f33( D60_2_D65_CAT));
+
     // CIE XYZ to rendering space RGB
     linearCV = mult_f3_f44( XYZ, XYZ_2_AP1_MAT);
 
-  // Store pre inversion rgb AP1 values
-  float pre_tone[3] = linearCV; 
+  // Undo desaturation to compensate for luminance difference
+    linearCV = mult_f3_f33( linearCV, invert_f33( ODT_SAT_MAT));
 
-  // Undo highlight roll-off and scaling
-    linearCV[0] = roll_white_rev( linearCV[0] / SCALE, NEW_WHT, ROLL_WIDTH);
-    linearCV[1] = roll_white_rev( linearCV[1] / SCALE, NEW_WHT, ROLL_WIDTH);
-    linearCV[2] = roll_white_rev( linearCV[2] / SCALE, NEW_WHT, ROLL_WIDTH);
-  
+  // Undo gamma adjustment to compensate for dim surround
+    linearCV = dimSurround_to_darkSurround( linearCV);
+
   // Scale linear code value to luminance
     float rgbPre[3];
     rgbPre[0] = linCV_2_Y( linearCV[0], CINEMA_WHITE, CINEMA_BLACK);
     rgbPre[1] = linCV_2_Y( linearCV[1], CINEMA_WHITE, CINEMA_BLACK);
     rgbPre[2] = linCV_2_Y( linearCV[2], CINEMA_WHITE, CINEMA_BLACK);
-    
-   
+
+  // Store pre inversion rgb AP1 values
+  float pre_tone[3] = rgbPre;  
 
   // Apply the tonescale independently in rendering-space RGB
     float rgbPost[3];
-    rgbPost[0] = segmented_spline_c9_rev( rgbPre[0]);
-    rgbPost[1] = segmented_spline_c9_rev( rgbPre[1]);
-    rgbPost[2] = segmented_spline_c9_rev( rgbPre[2]);
+    rgbPost[0] = segmented_spline_c9_rev( pre_tone[0]);
+    rgbPost[1] = segmented_spline_c9_rev( pre_tone[1]);
+    rgbPost[2] = segmented_spline_c9_rev( pre_tone[2]);
+
+  // Rendering space RGB to OCES
+    float oces[3] = mult_f3_f44( rgbPost, AP1_2_AP0_MAT);
+
     
-   
   //
   // INV RRT PROCESSING
   // 
     
 
   // --- OCES to RGB rendering space --- //
-  rgbPre = rgbPost;
+  rgbPre = mult_f3_f44( oces, AP0_2_AP1_MAT);
 
   // --- Apply the tonescale independently in rendering-space RGB --- //
     rgbPost[0] = segmented_spline_c5_rev( rgbPre[0]);
     rgbPost[1] = segmented_spline_c5_rev( rgbPre[1]);
     rgbPost[2] = segmented_spline_c5_rev( rgbPre[2]);
-
 
   // --- Global desaturation --- //
     rgbPost = mult_f3_f33( rgbPost, invert_f33(RRT_SAT_MAT));
@@ -215,14 +219,6 @@ void main
     rOut = aces[0];
     gOut = aces[1];
     bOut = aces[2];
-    aOut = aIn;    
-    
+    aOut = aIn;        
     
 }
-
-
-
-
-
-
-
