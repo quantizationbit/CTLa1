@@ -1,7 +1,7 @@
 
 
 // 
-// Convert PQ to Gamma
+// Convert PQ to linear
 //
 
 
@@ -9,6 +9,8 @@
 
 import "ACESlib.Utilities.a1.0.1";
 import "ACESlib.Transform_Common.a1.0.1";
+import "ACESlib.ODT_Common.a1.0.1";
+import "ACESlib.Tonescales.a1.0.1";
 
 
 
