@@ -14,7 +14,7 @@ const float c= 0.55991073;
 
 float HLG_r( float L)
 {
-	
+  L = clamp(L, 0.0, 12.0);
   
   float V;
   // input assumes normalized luma 0-1+ (12)
@@ -43,5 +43,6 @@ float HLG_f( float V)
   }
   
   // output normalizes Luma to 0-1+ (12)
+  L = clamp(L, 0.0, 12.0);
   return L;
 }

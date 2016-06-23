@@ -51,11 +51,11 @@ void main
  }
  else if (colorSpace == 2) {
  //2020 D65
-	Yd = 0.2627*linearCV[0] + 0.6780*linearCV[1] + 0.0593*linearCV[2];
+	Yd = 0.2627*linearCV[0] + 0.677998*linearCV[1] + 0.0593017*linearCV[2];
   }
  else {
  //709 D65
-    Yd = 0.2126*linearCV[0] + 0.7152*linearCV[1] + 0.0722*linearCV[2];
+    Yd = 0.212639*linearCV[0] + 0.715169*linearCV[1] + 0.0721923*linearCV[2];
 }
  float Ys = pow(Yd, 1.0/gamma);
  float scale;
