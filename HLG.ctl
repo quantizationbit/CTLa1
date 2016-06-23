@@ -15,15 +15,15 @@ const float c= 0.55991073;
 
 float HLG_r( float L)
 {
-  L = clamp(L, 0.0, 12.0);
+  float Lc = clamp(L, 0.0, 12.0);
   
   float V;
   // input assumes normalized luma 0-1+ (12)
   
-  if(L <= 1.0) {
-     V = 0.5 * pow(L, 0.5);
+  if(Lc <= 1.0) {
+     V = 0.5 * pow(Lc, 0.5);
   } else {
-     V = a * log(L - b) + c;
+     V = a * log(Lc - b) + c;
   }
 
   return V;
