@@ -58,40 +58,22 @@ void main
  //709 D65
     Ys = 0.2126*linearCV[0] + 0.7152*linearCV[1] + 0.0722*linearCV[2];
 }
- float Yd = pow(Ys,(gamma-1.0));
+ float Yd = pow(Ys,gamma);
  float scale;
-  if (Ys < 0.0001)
+  if (Ys < FLT_MIN)
  { scale = 1.0; }
  else
  { scale = Yd/Ys; } 
  
  // scale scene light RGB to apply system gamma
- linearCV[0] = scale*linearCV[0];
- linearCV[1] = scale*linearCV[1];
- linearCV[2] = scale*linearCV[2];
- 
- 
- // Step 2:  Apply the OETF to the computed
- // scene linear light from the prior step.
- // scale from 0-12. to fit OETF formula
- linearCV[0] = rIn*12.0;
- linearCV[1] = gIn*12.0;
- linearCV[2] = bIn*12.0;
- 
- 
+ linearCV[0] = LRefDisplay*scale*linearCV[0];
+ linearCV[1] = LRefDisplay*scale*linearCV[1];
+ linearCV[2] = LRefDisplay*scale*linearCV[2];
 
  
-  
- // Encode linear  gamma inverted code values with OETF transfer function
- float outputCV[3];
- outputCV[0] = HLG_r( linearCV[0]);
- outputCV[1] = HLG_r( linearCV[1]);
- outputCV[2] = HLG_r( linearCV[2]);
-
-
- rOut = outputCV[0];
- gOut = outputCV[1];
- bOut = outputCV[2];      
+ rOut = linearCV[0];
+ gOut = linearCV[1];
+ bOut = linearCV[2];      
 }
 
 

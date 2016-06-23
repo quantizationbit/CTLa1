@@ -20,12 +20,13 @@ void main
     output varying float gOut,
     output varying float bOut,
     input uniform float LRefDisplay=800.0,
-    input uniform float Lb = 0.05,
+    input uniform float Lb = 0.0,
     input uniform unsigned int  colorSpace = 0
 )
 {
 
  float linearCV[3] = { rIn, gIn, bIn};
+
 
 
  // Input Data from 0.0-1.0
@@ -56,28 +57,21 @@ void main
  //709 D65
     Yd = 0.2126*linearCV[0] + 0.7152*linearCV[1] + 0.0722*linearCV[2];
 }
- float Ys = exp(log(Yd)/(gamma-1.0));
+ float Ys = pow(Yd, 1.0/gamma);
  float scale;
- if (Yd < 0.0001)
+ if (Yd < FLT_MIN)
  { scale = 1.0; }
  else
  { scale = Ys/Yd; }
  
  
  // scale display light RGB to remove system gamma
- linearCV[0] = scale*linearCV[0];
- linearCV[1] = scale*linearCV[1];
- linearCV[2] = scale*linearCV[2];
+ linearCV[0] = 12.0*scale*linearCV[0];
+ linearCV[1] = 12.0*scale*linearCV[1];
+ linearCV[2] = 12.0*scale*linearCV[2];
  
  
- // Step 2:  Apply the OETF to the computed
- // scene linear light from the prior step.
- // scale from 0-12. to fit OETF formula
- linearCV[0] = linearCV[0]*12.0;
- linearCV[1] = linearCV[1]*12.0;
- linearCV[2] = linearCV[2]*12.0;
- 
- 
+
 
  
   
