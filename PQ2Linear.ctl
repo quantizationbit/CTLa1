@@ -7,10 +7,10 @@
 
 
 
-import "ACESlib.Utilities.a1.0.1";
-import "ACESlib.Transform_Common.a1.0.1";
-import "ACESlib.ODT_Common.a1.0.1";
-import "ACESlib.Tonescales.a1.0.1";
+import "ACESlib.Utilities";
+import "ACESlib.Transform_Common";
+import "ACESlib.ODT_Common";
+import "ACESlib.Tonescales";
 
 
 
@@ -37,7 +37,7 @@ void main
     float PQ[3] = { rIn, gIn, bIn};
 
   // Decode with inverse PQ transfer function
-    float linearCV[3] = ST2048_2_Y_f3( PQ);
+    float linearCV[3] = ST2084_2_Y_f3( PQ);
 
     
   // Clip range 
