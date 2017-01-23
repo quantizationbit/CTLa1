@@ -3,10 +3,10 @@
 
 
 
-import "ACESlib.Utilities.a1.0.1";
-import "ACESlib.Transform_Common.a1.0.1";
-import "ACESlib.ODT_Common.a1.0.1";
-import "ACESlib.Tonescales.a1.0.1";
+import "ACESlib.Utilities";
+import "ACESlib.Transform_Common";
+import "ACESlib.ODT_Common";
+import "ACESlib.Tonescales";
 
 
 const Chromaticities P3D65_PRI =
