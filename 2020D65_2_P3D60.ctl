@@ -39,6 +39,10 @@ void main
     // convert from 2020 to XYZ
     float XYZ[3] = mult_f3_f44( linearCV, R2020_PRI_2_XYZ_MAT);
 
+    // Apply CAT from assumed observer adapted white to ACES white point
+    XYZ = mult_f3_f33( XYZ, invert_f33( D60_2_D65_CAT));
+
+
     // Convert from XYZ to P3D60 primaries
     linearCV = mult_f3_f44( XYZ, XYZ_2_DISPLAY_PRI_MAT);    
 
