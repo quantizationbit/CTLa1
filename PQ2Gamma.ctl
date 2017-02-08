@@ -35,7 +35,7 @@ void main
     float PQ[3] = { rIn, gIn, bIn};
 
   // Decode with inverse PQ transfer function
-    float linearCV[3] = ST2048_2_Y_f3( PQ);
+    float linearCV[3] = ST2084_2_Y_f3(PQ);
 
     
   // Clip range to where you want 1.0 in gamma to be
