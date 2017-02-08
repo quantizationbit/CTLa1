@@ -5,9 +5,7 @@
 //
 
 
-
-
-import "ACESlib.Utilities"
+import "ACESlib.Utilities";
 import "ACESlib.Transform_Common";
 
 
