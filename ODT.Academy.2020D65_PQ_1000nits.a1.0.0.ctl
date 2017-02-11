@@ -38,11 +38,11 @@
 
 
 
-import "ACESlib.Utilities.a1.0.0";
-import "ACESlib.Utilities_Color.a1.0.0";
-import "ACESlib.Transform_Common.a1.0.0";
-import "ACESlib.ODT_Common.a1.0.0";
-import "ACESlib.Tonescales.a1.0.0";
+import "ACESlib.Utilities.a1.0.1";
+import "ACESlib.Utilities_Color.a1.0.1";
+import "ACESlib.Transform_Common.a1.0.1";
+import "ACESlib.ODT_Common.a1.0.1";
+import "ACESlib.Tonescales.a1.0.1";
 
 // ------- Hue restore functions
 int[3] order3( float r, float g, float b)
