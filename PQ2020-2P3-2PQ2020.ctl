@@ -7,8 +7,8 @@
 
 
 
-import "ACESlib.Utilities.a1.0.1";
-import "ACESlib.Transform_Common.a1.0.1";
+import "ACESlib.Utilities";
+import "ACESlib.Transform_Common";
 
 
 const Chromaticities P3D65_PRI =
@@ -44,7 +44,7 @@ void main
     float PQ[3] = { rIn, gIn, bIn};
 
   // Decode with inverse PQ transfer function
-    float linearCV[3] = ST2048_2_Y_f3( PQ);
+    float linearCV[3] = ST2084_2_Y_f3( PQ);
     
   // convert from 2020 to XYZ
      float XYZ[3] = mult_f3_f44( linearCV, R2020_PRI_2_XYZ_MAT);
@@ -63,7 +63,7 @@ void main
     
     // encode to PQ
   
-    float outputCV[3] = Y_2_ST2048_f3( linearCV);
+    float outputCV[3] = Y_2_ST2084_f3( linearCV);
 
 
     rOut = outputCV[0];
