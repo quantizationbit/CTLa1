@@ -39,7 +39,7 @@ void main
     float PQ[3] = { rIn, gIn, bIn};
 
   // Decode with inverse PQ transfer function
-    float linearCV[3] = ST2048_2_Y_f3( PQ);
+    float linearCV[3] = ST2084_2_Y_f3( PQ);
     
   // convert from 2020 to XYZ
      float XYZ[3] = mult_f3_f44( linearCV, R2020_PRI_2_XYZ_MAT);

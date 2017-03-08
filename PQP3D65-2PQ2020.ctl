@@ -11,15 +11,6 @@ import "ACESlib.Utilities";
 import "ACESlib.Transform_Common";
 
 
-const Chromaticities P3D65_PRI =
-{
-  { 0.68000,  0.32000},
-  { 0.26500,  0.69000},
-  { 0.15000,  0.06000},
-  { 0.31270,  0.32900}
-};
-
-
 const float L_W = 1.0;
 const float L_B = 0.0;
 
@@ -46,17 +37,10 @@ void main
   // Decode with inverse PQ transfer function
     float linearCV[3] = ST2084_2_Y_f3( PQ);
     
-  // convert from 2020 to XYZ
-     float XYZ[3] = mult_f3_f44( linearCV, R2020_PRI_2_XYZ_MAT);
-    // Convert from XYZ to 709 primaries
-    linearCV = mult_f3_f44( XYZ, XYZ_2_P3_PRI_MAT);    
-
-    
-    linearCV = clamp_f3( linearCV, 0., CLIP);
     
   // multiply back to 2020
     // convert from P3 to XYZ
-     XYZ = mult_f3_f44( linearCV, P3_PRI_2_XYZ_MAT);
+    float XYZ[3] = mult_f3_f44( linearCV, P3_PRI_2_XYZ_MAT);
     // Convert from XYZ to 2020 primaries
     linearCV = mult_f3_f44( XYZ, XYZ_2_R2020_PRI_MAT);    
     linearCV = clamp_f3( linearCV, 0., CLIP);
