@@ -17,7 +17,7 @@ import "ACESlib.Tonescales";
 /* --- ODT Parameters --- */
 const Chromaticities DISPLAY_PRI = P3D65_PRI;
 const float R2020_PRI_2_XYZ_MAT[4][4]   = RGBtoXYZ(REC2020_PRI,1.0);
-const float XYZ_2_DISPLAY_PRI_MAT[4][4] = XYZtoRGB(P3D60_PRI,1.0);
+const float XYZ_2_DISPLAY_PRI_MAT[4][4] = XYZtoRGB(P3D65_PRI,1.0);
 
 
 
