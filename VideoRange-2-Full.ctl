@@ -28,9 +28,15 @@ void main
 	
 // extract out 0-1 range from input that would be MSB justified 0-1
  float RGBFULL[3];
- RGBFULL[0] = (rIn - F_BLACK)/RANGE;
- RGBFULL[1] = (gIn - F_BLACK)/RANGE;
- RGBFULL[2] = (bIn - F_BLACK)/RANGE;
+ RGBFULL[0] = rIn;
+ RGBFULL[1] = gIn;
+ RGBFULL[2] = bIn;
+ RGBFULL = clamp_f3( RGBFULL, F_BLACK, F_WHITE);
+
+ 
+ RGBFULL[0] = (RGBFULL[0] - F_BLACK)/RANGE;
+ RGBFULL[1] = (RGBFULL[1] - F_BLACK)/RANGE;
+ RGBFULL[2] = (RGBFULL[2] - F_BLACK)/RANGE;
  
   RGBFULL = clamp_f3( RGBFULL, 0, 1.0);
   

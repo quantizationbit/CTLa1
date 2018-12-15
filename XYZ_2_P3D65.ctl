@@ -35,12 +35,23 @@ void main
     float XYZ[3] = { rIn, gIn, bIn};
 
     
+=======
+    output varying float bOut
+)
+{
+	
+    float j2k[3] = { rIn, gIn, bIn};
+
+    
+    // convert from cinema X'Y'Z' gamma 2.6 to XYZ
+    float XYZ[3] = dcdm_decode(j2k);
+
+
     // Convert from XYZ to P3D65 primaries
     float linearCV[3] = mult_f3_f44( XYZ, XYZ_2_DISPLAY_PRI_MAT);    
 
     
     float outputCV[3] = clamp_f3( linearCV, 0., CLIP);
-    
 
 
     rOut = outputCV[0];
