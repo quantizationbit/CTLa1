@@ -12,6 +12,7 @@ import "ACESlib.Transform_Common";
 
 
 const float R2020_PRI_2_XYZ_MAT[4][4] = RGBtoXYZ(REC2020_PRI,1.0);
+const float XYZ_2_R2020_PRI_MAT[4][4] = XYZtoRGB(REC2020_PRI,1.0);
 
 
 
@@ -33,17 +34,18 @@ void main
   // Decode with inverse PQ transfer function
     float linearCV[3] = ST2084_2_Y_f3( PQ);
     
-     float XYZ[3] = mult_f3_f44( linearCV, R2020_PRI_2_XYZ_MAT);
+
   
-  if (XYZ[1] <= BLACK) {
-	  linearCV[0] = linearCV[0] + BLACK;
-	  linearCV[1] = linearCV[1] + BLACK;
-	  linearCV[2] = linearCV[2] + BLACK;
-  }
+	 linearCV[0] = (linearCV[0]+BLACK)*(10000.0 - BLACK)/10000.0;
+	 linearCV[1] = (linearCV[1]+BLACK)*(10000.0 - BLACK)/10000.0;
+	 linearCV[2] = (linearCV[2]+BLACK)*(10000.0 - BLACK)/10000.0;
+	 
+
+
+    linearCV = clamp_f3( linearCV, 0., CLIP);
     
     // encode to PQ
-  
-    float outputCV[3] = Y_2_ST2084_f3( linearCV);
+     float outputCV[3] = Y_2_ST2084_f3( linearCV);
 
 
     rOut = outputCV[0];

@@ -7,7 +7,7 @@
 import "ACESlib.Utilities";
 import "ACESlib.Transform_Common";
 
-import "HLG";
+import "HLG3";
 
 // colorSpace 709D65 ==0, P3D65 == 1, 2020D65 == 2
 
@@ -26,6 +26,11 @@ void main
 {
 
  float linearCV[3] = { rIn, gIn, bIn};
+ 
+  // input narrow range with superwhites
+ linearCV[0] = clamp(linearCV[0]-64/(940-64),0.0,1.1);
+ linearCV[1] = clamp(linearCV[1]-64/(940-64),0.0,1.1);
+ linearCV[2] = clamp(linearCV[2]-64/(940-64),0.0,1.1);
 
 
  // Input Data from 0.0-1.0
