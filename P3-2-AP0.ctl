@@ -11,7 +11,7 @@ import "ACESlib.Tonescales";
 
 
 const float XYZ_2_AP0_PRI_MAT[4][4] = XYZtoRGB(AP0,1.0);
-const float R709_PRI_2_XYZ_MAT[4][4]  = RGBtoXYZ(REC709_PRI,1.0);
+const float R709_PRI_2_XYZ_MAT[4][4]  = RGBtoXYZ(P3D65_PRI,1.0);
 
 
 void main 
